@@ -20,10 +20,8 @@ You need a valid MongoDb URI such as:
 
     mongodb+srv://<mongo_db_user>:<mongo_db_password>@mosanochallengecluster.mfr5t.mongodb.net/<mongo_db_database>?retryWrites=true&w=majority```
 
-## Running the project for development
-
+## Running the server
     $ npm start
-
-## Simple build for production
-
-    $ npm build
+    
+## Tests
+    $ npm test
