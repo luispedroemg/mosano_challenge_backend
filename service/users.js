@@ -25,12 +25,13 @@ async function getUsers({name=undefined, surname=undefined, birthday=undefined, 
     .sort(sort)
     .skip(limit*page)
     .limit(limit)
+    .populate('country')
     .lean()
     .exec();
 }
 
 async function getUserById(id){
-  const result = await User.findOne({_id: id}).lean().exec();
+  const result = await User.findOne({_id: id}).populate('country').lean().exec();
   if(!result) return Promise.reject({error:'service', message:'User not found'});
   return new Promise((resolve) => resolve(result));
 }
