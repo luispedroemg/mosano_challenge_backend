@@ -1,4 +1,5 @@
 const express = require('express');
+const { graphqlHTTP } = require('express-graphql');
 const logger = require('morgan');
 const db = require('./db');
 const indexRouter = require('./routes/index');
@@ -14,24 +15,40 @@ db.connect().then(
 
 const app = express();
 
-app.use(function (req, res, next) {
-  // TODO: Specify only exactly what is needed
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Headers', '*');
-  res.setHeader('Content-Type', 'application/json');
-  next();
-});
-
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+app.use('/', function (req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Headers', '*');
+  next();
+});
 
-app.use('/', indexRouter);
+app.use('/api',function (req, res, next) {
+    res.setHeader('Content-Type', 'application/json');
+    next();
+  },
+  indexRouter
+);
+app.use(
+  '/graphql',
+  function (req, res, next) {
+    res.setHeader('Content-Type', 'application/graphql');
+    next();
+  },
+  graphqlHTTP({
+    schema: require('./models/graph_ql/graphQLSchema'),
+    graphiql: true,
+  })
+);
 
 app.use(function (err, req, res, next) {
-  console.error(err.stack);
-  res.status(500).json([{error:'process', msg:err.message}]);
-})
+  console.error(err.message);
+  const errResponse = { msg: err.message };
+  if(err.error) errResponse.error = err.error;
+  else errResponse.error = 'process';
+  res.status(500).json([errResponse]);
+});
 
 module.exports = app;
 
