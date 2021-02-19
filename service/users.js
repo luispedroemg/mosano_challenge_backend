@@ -14,6 +14,16 @@ async function createUser({name, surname, birthday, countryCode} = undefined) {
   }
 }
 
+async function getCount({name=undefined, surname=undefined, birthday=undefined, _id=undefined} = {}){
+  const filter = {};
+  if(surname) query.surname = surname;
+  if(name) query.name = name;
+  if(birthday) query.birthday = birthday;
+  if(_id) query._id = _id;
+
+  return User.find(filter).count().exec();
+}
+
 async function getUsers({name=undefined, surname=undefined, birthday=undefined, _id=undefined} = {}, {limit = 10,  page=0, sort = {name:1}} = {}){
   const filter = {};
   if(surname) query.surname = surname;
@@ -64,4 +74,4 @@ async function deleteUser(id=undefined){
   return new Promise((resolve) => resolve(result));
 }
 
-module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser };
+module.exports = { createUser, getUsers, getUserById, updateUser, deleteUser, getCount };

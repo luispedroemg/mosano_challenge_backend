@@ -11,9 +11,10 @@ const router = express.Router();
 router.get('/',
   function(req, res, next) {
   const options = { ... req.query, limit: parseInt(req.query.limit)};
-  UserService.getUsers({}, options).then((users) => {
-    res.status(200).json(users);
-  }, (err) => next(err));
+  UserService.getUsers({}, options).then((users) =>
+    UserService.getCount({}).then((total) => res.status(200).json({total, users: users})
+    , (err) => next(err))
+  , (err) => next(err));
 });
 
 router.get(
