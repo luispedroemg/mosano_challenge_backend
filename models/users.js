@@ -6,4 +6,5 @@ const userSchema = new mongoose.Schema({
   country: { type: mongoose.Schema.Types.ObjectId, ref: 'Country' },
   birthday: 'Date'
 });
+
 module.exports = mongoose.model('User', userSchema);
